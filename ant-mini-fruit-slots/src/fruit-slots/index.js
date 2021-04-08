@@ -17,9 +17,6 @@ Component({
     disabled: false, // 按钮是否可点击
     onStart: () => { }, // 开始的回调
     onFinish: () => { }, // 结束的回调
-    onBeforeStart: () => { }, //前置回调
-    premise: false, // 前置条件是否成功
-    isConfirm: false, // 是否开启前置
   },
   didMount() {
     this.prizeLength = 8;
@@ -27,12 +24,6 @@ Component({
     this.setData({
       itemWidth: parseInt((this.props.width - 4 * this.props.margin) / 3)
     })
-  },
-  didUpdate() {
-    if (!this.props.isConfirm) return;
-    if (this.props.premise) {
-      this.start()
-    }
   },
   methods: {
     next(activeIndex) {
@@ -80,10 +71,10 @@ Component({
       }
       return -1;
     },
-    start() {
-      if (this.props.isConfirm && !this.props.premise) {
-        this.props.onBeforeStart();
-        return;
+    async start() {
+      if (this.props.onBeforeStart) {
+        const isConfirm = await this.props.onBeforeStart();
+        if (!isConfirm) { return };
       }
       if (this.props.disabled || this.data.isRolling) return;
       if (this.props.prizeList.length !== 8) {

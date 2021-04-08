@@ -6,8 +6,6 @@
    currentIndex="{{currentIndex}}"
    onStart="onStart"
    onFinish="onFinish"
-   premise="{{premise}}" 
-   isConfirm="{{true}}" 
    onBeforeStart="onBeforeStart" 
   />
   <view class='tip-text'>{{tipText}}</view>

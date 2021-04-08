@@ -38,20 +38,21 @@ Page({
     disabled: false,
     currentIndex: 4,
     tipText: '',
-    premise: false,//跑马灯不执行
   },
   onBeforeStart() {
-    my.confirm({
-      title: '温馨提示',
-      content: '您是否想查询快递单号：\n1234567890',
-      confirmButtonText: '马上查询',
-      cancelButtonText: '暂不需要',
-      success: (result) => {
-        const { confirm } = result
-        this.setData({ premise: confirm })
-      },
-    });
+    return new Promise((resolve) => {
+      my.confirm({
+        title: '温馨提示',
+        content: '您是否想查询快递单号：\n1234567890',
+        confirmButtonText: '马上查询',
+        cancelButtonText: '暂不需要',
+        success: (result) => {
+          const { confirm } = result
+          return resolve(confirm);
+        },
+      });
 
+    });
   },
   onStart() {
     console.log('开始了');
@@ -67,7 +68,6 @@ Page({
     this.setData({
       currentIndex: Math.floor(Math.random() * 8),
       tipText: `抽奖结果：${name}`,
-      premise: false
     });
   }
 });
