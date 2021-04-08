@@ -1,11 +1,14 @@
 <view class="container">
-  <fruit-slots
-    prizeList="{{prizeList}}"
-    prizeName="{{prizeName}}"
-    disabled="{{disabled}}"
-    currentIndex="{{currentIndex}}"
-    onStart="onStart"
-    onFinish="onFinish"
+  <fruit-slots 
+   prizeList="{{prizeList}}"
+   prizeName="{{prizeName}}" 
+   disabled="{{disabled}}" 
+   currentIndex="{{currentIndex}}"
+   onStart="onStart"
+   onFinish="onFinish"
+   premise="{{premise}}" 
+   isConfirm="{{true}}" 
+   onBeforeStart="onBeforeStart" 
   />
   <view class='tip-text'>{{tipText}}</view>
 </view>

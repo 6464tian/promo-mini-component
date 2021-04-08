@@ -15,8 +15,11 @@ Component({
     speed: 100, // 转动速度, 单位 ms
     class: '', // 自定义类名
     disabled: false, // 按钮是否可点击
-    onStart: () => {}, // 开始的回调
-    onFinish: () => {} // 结束的回调
+    onStart: () => { }, // 开始的回调
+    onFinish: () => { }, // 结束的回调
+    onBeforeStart: () => { }, //前置回调
+    premise: false, // 前置条件是否成功
+    isConfirm: false, // 是否开启前置
   },
   didMount() {
     this.prizeLength = 8;
@@ -25,10 +28,16 @@ Component({
       itemWidth: parseInt((this.props.width - 4 * this.props.margin) / 3)
     })
   },
+  didUpdate() {
+    if (!this.props.isConfirm) return;
+    if (this.props.premise) {
+      this.start()
+    }
+  },
   methods: {
     next(activeIndex) {
       activeIndex = activeIndex % this.prizeLength;
-      this.setData({activeIndex: this.data.activeOrder[activeIndex]});
+      this.setData({ activeIndex: this.data.activeOrder[activeIndex] });
       if (this.currentStep === this.totalSteps) {
         this.done(activeIndex);
         return;
@@ -72,6 +81,10 @@ Component({
       return -1;
     },
     start() {
+      if (this.props.isConfirm && !this.props.premise) {
+        this.props.onBeforeStart();
+        return;
+      }
       if (this.props.disabled || this.data.isRolling) return;
       if (this.props.prizeList.length !== 8) {
         throw new Error('奖品项列表 prizeList 长度不为8');
@@ -85,7 +98,7 @@ Component({
       // 总转动步数 = 默认圈数 x 奖品个数 + 结束位置索引 + 当前位置到一圈结束还剩下的步数
       this.totalSteps = this.props.rollTimes * this.prizeLength + prizeIndex + (this.prizeLength - activeIndex);
       this.currentStep = 0;
-      this.setData({isRolling: true});
+      this.setData({ isRolling: true });
       this.next(activeIndex);
       this.props.onStart();
     },
@@ -93,7 +106,7 @@ Component({
       // setTimeout防止抽奖结束后父组件设置disabled=true的过程中用户马上再次点击抽奖 此时 disabled 和 isRolling
       // 状态还没来得及更新，start 函数可能被执行
       setTimeout(() => {
-        this.setData({isRolling: false});
+        this.setData({ isRolling: false });
       }, 50);
       this.props.onFinish(activeIndex, this.props.prizeName);
     }
